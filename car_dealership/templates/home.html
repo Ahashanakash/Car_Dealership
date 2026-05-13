@@ -1,0 +1,528 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}Home | Car Dealership{% endblock %}
+
+{% block body %}
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<!-- Hero Video Banner Carousel -->
+<section class="hero-video-section">
+    <!-- SLIDER DURATION CONTROL: data-bs-interval="4000" means each slide stays for 4 seconds -->
+    <div id="heroVideoCarousel" class="carousel slide hero-video-carousel" data-bs-ride="carousel"
+        data-bs-interval="7000" data-bs-touch="true">
+
+        <!-- Indicators -->
+        <div class="carousel-indicators hero-video-carousel__indicators">
+            <button type="button" data-bs-target="#heroVideoCarousel" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+
+            <button type="button" data-bs-target="#heroVideoCarousel" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+        </div>
+
+        <!-- Slides -->
+        <div class="carousel-inner hero-video-carousel__inner">
+
+            <!-- Slide 1 -->
+            <div class="carousel-item hero-video-carousel__item active">
+                <div class="hero-video-carousel__media">
+                    <video autoplay muted loop playsinline preload="metadata">
+                        <source src="{% static 'banner/v1.mp4' %}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="hero-video-carousel__overlay"></div>
+
+                <div class="hero-video-carousel__caption hero-video-carousel__caption--word">
+                    <p class="hero-video-carousel__eyebrow js-word-fade">
+                        Premium Car Marketplace
+                    </p>
+
+                    <h1 class="hero-video-carousel__title js-word-fade">
+                        Welcome to Car Dealership System
+                    </h1>
+
+                    <p class="hero-video-carousel__text js-word-fade">
+                        Here you can buy your favourite car with confidence.
+                    </p>
+
+                    <div class="hero-video-carousel__actions js-action-fade">
+                        <a href="{% url 'cars' %}" class="hero-video-carousel__btn hero-video-carousel__btn--primary">
+                            Browse Cars
+                        </a>
+
+                        <a href="{% url 'find_us' %}"
+                            class="hero-video-carousel__btn hero-video-carousel__btn--secondary">
+                            Find Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item hero-video-carousel__item">
+                <div class="hero-video-carousel__media">
+                    <video autoplay muted loop playsinline preload="metadata">
+                        <source src="{% static 'banner/v2.mp4' %}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="hero-video-carousel__overlay"></div>
+
+                <div class="hero-video-carousel__caption hero-video-carousel__caption--letter">
+                    <p class="hero-video-carousel__eyebrow js-letter-reveal">
+                        Smart Vehicle Intelligence
+                    </p>
+
+                    <h1 class="hero-video-carousel__title hero-video-carousel__title--large js-letter-reveal">
+                        AI Price Analysis
+                    </h1>
+
+                    <p class="hero-video-carousel__text js-letter-reveal">
+                        You can check whether a car price is high, low, or fair.
+                    </p>
+
+                    <div class="hero-video-carousel__actions js-action-fade">
+                        <a href="{% url 'cars' %}" class="hero-video-carousel__btn hero-video-carousel__btn--primary">
+                            Analyze Cars
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Controls -->
+        <button class="carousel-control-prev hero-video-carousel__control hero-video-carousel__control--prev"
+            type="button" data-bs-target="#heroVideoCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+
+        <button class="carousel-control-next hero-video-carousel__control hero-video-carousel__control--next"
+            type="button" data-bs-target="#heroVideoCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+
+    </div>
+</section>
+<!-- ------------------- -->
+
+
+<!-- car type cards -->
+<!-- Car Type Slider Section -->
+<section class="car-type-section" id="carTypeSection">
+
+    <div class="car-type-section__header">
+        <p class="car-type-section__eyebrow">
+            Explore by Vehicle Type
+        </p>
+
+        <h2 class="car-type-section__title">
+            Find the Right Car for Your Journey
+        </h2>
+
+        <p class="car-type-section__subtitle">
+            Browse available vehicles by category, compare key details, and choose the model that fits your budget and
+            lifestyle.
+        </p>
+    </div>
+
+    <!-- Categories -->
+    <div class="car-type-tabs js-car-tabs">
+        {% for cat in categories %}
+        <a href="{% url 'category_wise_car' cat %}"
+            class="car-type-tabs__item {% if request.GET.category == cat %}is-active{% endif %}">
+            {{ cat|title }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- Swiffy Slider Assets -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiffy-slider@1.6.0/dist/css/swiffy-slider.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/swiffy-slider@1.6.0/dist/js/swiffy-slider.min.js" defer></script>
+
+    <!-- GSAP Assets -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+    <!-- Car Slider -->
+    <div class="car-type-slider-shell js-car-slider">
+        <div class="swiffy-slider vehicle-swiffy-slider slider-item-show3 slider-item-show2-sm slider-nav-visible slider-item-gap">
+
+            <ul class="slider-container">
+
+                {% for car in data %}
+                <li>
+                    <article class="car-type-card">
+
+                        <!-- Image Top -->
+                        <div class="car-type-card__media">
+                            <span class="car-type-card__badge">
+                                {{ car.category|title }}
+                            </span>
+
+                            <img src="{{ car.image.url }}" alt="{{ car.car_model }}">
+
+                            {% if car.brand.logo %}
+                            <div class="car-type-card__brand-logo">
+                                <img src="{{ car.brand.logo.url }}" alt="{{ car.brand.name }}">
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Content -->
+                        <div class="car-type-card__body">
+
+                            <div class="car-type-card__meta-row">
+                                <span class="car-type-card__year">
+                                    {{ car.prod_year|default:"2026" }}
+                                </span>
+                            </div>
+
+                            <div class="car-type-card__heading-row">
+                                <div>
+                                    <p class="car-type-card__brand">
+                                        {{ car.brand.name }}
+                                    </p>
+
+                                    <h3 class="car-type-card__title">
+                                        {{ car.car_model }}
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <div class="car-type-card__info-grid">
+                                <div class="car-type-card__info-item">
+                                    <span class="car-type-card__info-label">
+                                        Price
+                                    </span>
+
+                                    <strong class="car-type-card__info-value">
+                                        ${{ car.price }}
+                                    </strong>
+                                </div>
+
+                                <div class="car-type-card__info-item">
+                                    <span class="car-type-card__info-label">
+                                        Mileage
+                                    </span>
+
+                                    <strong class="car-type-card__info-value">
+                                        {{ car.mileage|default:"--" }}
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <div class="car-type-card__actions">
+                                <a href="{% url 'car_details' car.id %}" class="car-type-btn car-type-btn--details">
+                                    <span class="car-type-btn__text">
+                                        View Details
+                                    </span>
+
+                                    <span class="car-type-btn__arrow">
+                                        →
+                                    </span>
+                                </a>
+                            </div>
+
+                        </div>
+
+                    </article>
+                </li>
+                {% empty %}
+                <li>
+                    <div class="car-type-empty">
+                        <h3>No cars available</h3>
+                        <p>Please check another category or add vehicles from the dashboard.</p>
+                    </div>
+                </li>
+                {% endfor %}
+
+            </ul>
+
+            <!-- Small Slider Buttons -->
+            <button type="button" class="slider-nav vehicle-slider-nav vehicle-slider-nav--prev"
+                aria-label="Previous cars"></button>
+            <button type="button" class="slider-nav slider-nav-next vehicle-slider-nav vehicle-slider-nav--next"
+                aria-label="Next cars"></button>
+
+        </div>
+    </div>
+
+</section>
+
+
+
+<!-- Brand Logo Showcase Section -->
+<section class="brand-showcase-section" id="brandShowcaseSection">
+
+  <div class="brand-showcase-section__header">
+    <p class="brand-showcase-section__eyebrow">
+      Trusted Brands
+    </p>
+
+    <h2 class="brand-showcase-section__title">
+      Explore Cars from Leading Manufacturers
+    </h2>
+
+    <p class="brand-showcase-section__subtitle">
+      Browse vehicles from popular global brands available in our dealership collection.
+    </p>
+  </div>
+
+  <div class="brand-showcase js-brand-showcase">
+    <div class="brand-showcase__fade brand-showcase__fade--left"></div>
+    <div class="brand-showcase__fade brand-showcase__fade--right"></div>
+
+    <div class="brand-showcase__track js-brand-track">
+
+      {% for brand in brands %}
+        <a href="#" class="brand-showcase__item js-brand-item" aria-label="{{ brand.name }}">
+          <img src="{{ brand.logo.url }}" alt="{{ brand.name }}">
+          <span>{{ brand.name }}</span>
+        </a>
+      {% endfor %}
+
+      <!-- Duplicate set for smooth infinite loop -->
+      {% for brand in brands %}
+        <a href="#" class="brand-showcase__item js-brand-item" aria-label="{{ brand.name }}">
+          <img src="{{ brand.logo.url }}" alt="{{ brand.name }}">
+          <span>{{ brand.name }}</span>
+        </a>
+      {% endfor %}
+
+    </div>
+  </div>
+
+</section>
+
+<!-- review section  -->
+
+<!-- Customer Review Showcase Section -->
+<section class="review-showcase-section" id="reviewShowcaseSection">
+
+  <div class="review-showcase-section__header">
+    <p class="review-showcase-section__eyebrow">
+      Customer Reviews
+    </p>
+
+    <h2 class="review-showcase-section__title">
+      What Buyers Say About Us
+    </h2>
+
+    <p class="review-showcase-section__subtitle">
+      Real feedback from customers who explored, compared, and purchased vehicles through our dealership system.
+    </p>
+  </div>
+
+  <div class="review-showcase-box js-review-box">
+
+    <div class="review-showcase-box__fade review-showcase-box__fade--top"></div>
+    <div class="review-showcase-box__fade review-showcase-box__fade--bottom"></div>
+
+    <ul class="review-showcase-track js-review-track">
+
+      {% for review in reviews %}
+        <li class="review-showcase-item js-review-item">
+          <article class="review-showcase-card">
+
+            <!-- User Info -->
+            <div class="review-showcase-card__user">
+              <div class="review-showcase-card__avatar">
+                {% if review.user.profile.photo %}
+                  <img src="{{ review.user.profile.photo.url }}" alt="{{ review.user.username }}">
+                {% else %}
+                  <img src="{% static 'default.webp' %}" alt="{{ review.user.username }}">
+                {% endif %}
+              </div>
+
+              <div class="review-showcase-card__user-text">
+                <h3>
+                  {{ review.user.username }}
+                </h3>
+
+                <span>
+                  {{ review.created_at|timesince }} ago
+                </span>
+              </div>
+            </div>
+
+            <!-- Rating -->
+            <div class="review-showcase-card__rating" aria-label="{{ review.rating }} out of 5 stars">
+              {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}
+                  <span class="is-filled">★</span>
+                {% else %}
+                  <span>☆</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <!-- Review Text -->
+            <div class="review-showcase-card__body">
+              {{ review.body }}
+            </div>
+
+          </article>
+        </li>
+      {% empty %}
+        <li class="review-showcase-item">
+          <article class="review-showcase-card review-showcase-card--empty">
+            <h3>No reviews yet</h3>
+            <p>Customer reviews will appear here once users start sharing their experience.</p>
+          </article>
+        </li>
+      {% endfor %}
+
+      <!-- Duplicate for smooth vertical loop -->
+      {% for review in reviews %}
+        <li class="review-showcase-item js-review-item" aria-hidden="true">
+          <article class="review-showcase-card">
+
+            <div class="review-showcase-card__user">
+              <div class="review-showcase-card__avatar">
+                {% if review.user.profile.photo %}
+                  <img src="{{ review.user.profile.photo.url }}" alt="">
+                {% else %}
+                  <img src="{% static 'default.webp' %}" alt="">
+                {% endif %}
+              </div>
+
+              <div class="review-showcase-card__user-text">
+                <h3>
+                  {{ review.user.username }}
+                </h3>
+
+                <span>
+                  {{ review.created_at|timesince }} ago
+                </span>
+              </div>
+            </div>
+
+            <div class="review-showcase-card__rating">
+              {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}
+                  <span class="is-filled">★</span>
+                {% else %}
+                  <span>☆</span>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            <div class="review-showcase-card__body">
+              {{ review.body }}
+            </div>
+
+          </article>
+        </li>
+      {% endfor %}
+
+    </ul>
+  </div>
+
+</section>
+
+
+
+<!-- faq section -->
+<!-- FAQ Section -->
+<section class="faq-section" id="faqSection">
+
+  <div class="faq-section__header">
+    <p class="faq-section__eyebrow">
+      Frequently Asked Questions
+    </p>
+
+    <h2 class="faq-section__title">
+      Questions Before Buying a Car?
+    </h2>
+
+    <p class="faq-section__subtitle">
+      Find quick answers about car listings, price analysis, seller accounts, and dealership support.
+    </p>
+  </div>
+
+  <div class="faq-section__content js-faq-wrapper">
+
+    <details class="faq-item js-faq-item">
+      <summary class="faq-item__question">
+        <span>How can I view full details of a car?</span>
+        <span class="faq-item__icon"></span>
+      </summary>
+
+      <div class="faq-item__answer">
+        <p>
+          Click the car card’s details button to view complete information, including model, brand, year, price, mileage, image, and other available vehicle specifications.
+        </p>
+      </div>
+    </details>
+
+    <details class="faq-item js-faq-item">
+      <summary class="faq-item__question">
+        <span>How does AI price analysis help buyers?</span>
+        <span class="faq-item__icon"></span>
+      </summary>
+
+      <div class="faq-item__answer">
+        <p>
+          AI price analysis helps buyers understand whether a car’s listed price appears high, low, or fair based on available vehicle information. It gives buyers a clearer idea before making a decision.
+        </p>
+      </div>
+    </details>
+
+    <details class="faq-item js-faq-item">
+      <summary class="faq-item__question">
+        <span>Can sellers manage their own car listings?</span>
+        <span class="faq-item__icon"></span>
+      </summary>
+
+      <div class="faq-item__answer">
+        <p>
+          Yes. Registered sellers can access the seller dashboard to manage car listings, update information, add new vehicles, and keep their available inventory organized.
+        </p>
+      </div>
+    </details>
+
+    <details class="faq-item js-faq-item">
+      <summary class="faq-item__question">
+        <span>How can I contact the dealership?</span>
+        <span class="faq-item__icon"></span>
+      </summary>
+
+      <div class="faq-item__answer">
+        <p>
+          You can use the Find Us page to view dealership location and contact information. Buyers can also visit the dealership directly for further discussion and inspection.
+        </p>
+      </div>
+    </details>
+
+  </div>
+
+</section>
+
+
+<!-- JS FOR CUSTOM BUTTONS -->
+<script>
+    document.querySelector('.prev').addEventListener('click', () => {
+        document.querySelector('.review-slider .slider-nav').click();
+    });
+
+    document.querySelector('.next').addEventListener('click', () => {
+        document.querySelector('.review-slider .slider-nav-next').click();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,132 @@
+{% if recommended_cars %}
+
+<section class="recommended-cars-section js-recommended-cars-section" id="recommendedCarsSection">
+
+  <div class="recommended-cars-section__header">
+
+    <div>
+      <p class="recommended-cars-section__eyebrow">
+        Similar Vehicles
+      </p>
+
+      <h2>
+        Recommended Cars
+      </h2>
+
+      <p>
+        Explore other vehicles that may match your preference and budget.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="swiffy-slider recommended-cars-slider slider-item-show4 slider-item-show2-md slider-item-show1-sm slider-nav-visible slider-nav-animation slider-nav-animation-fadein slider-item-gap">
+
+    <ul class="slider-container recommended-cars-slider__container">
+
+      {% for rec_car in recommended_cars %}
+        <li class="recommended-cars-slider__item js-recommended-car-card">
+
+          <article class="recommended-car-card">
+
+            <!-- Image -->
+            <div class="recommended-car-card__media">
+              {% if rec_car.image %}
+                <img
+                  src="{{ rec_car.image.url }}"
+                  alt="{{ rec_car.brand.name }} {{ rec_car.car_model }}"
+                >
+              {% else %}
+                <div class="recommended-car-card__placeholder">
+                  No Image
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Content -->
+            <div class="recommended-car-card__body">
+
+              <div class="recommended-car-card__top">
+
+                <div>
+                  <p class="recommended-car-card__brand">
+                    {{ rec_car.brand.name }}
+                  </p>
+
+                  <h3>
+                    {{ rec_car.car_model }}
+                  </h3>
+                </div>
+
+              </div>
+
+              <div class="recommended-car-card__meta">
+                <span>
+                  {{ rec_car.prod_year }}
+                </span>
+
+                <span>
+                  {{ rec_car.category }}
+                </span>
+
+                <span>
+                  {{ rec_car.fuel_type }}
+                </span>
+              </div>
+
+              <div class="recommended-car-card__price">
+                <span>
+                  Price
+                </span>
+
+                <strong>
+                  ${{ rec_car.price }}
+                </strong>
+              </div>
+
+              <div class="recommended-car-card__details">
+                <span>
+                  {{ rec_car.mileage }} km
+                </span>
+
+                <span>
+                  {{ rec_car.color }}
+                </span>
+              </div>
+
+              <a href="{% url 'car_details' rec_car.id %}" class="car-type-btn car-type-btn--details">
+                <span>
+                  View Details
+                </span>
+
+                <span aria-hidden="true">
+                  →
+                </span>
+              </a>
+
+            </div>
+
+          </article>
+
+        </li>
+      {% endfor %}
+
+    </ul>
+
+    <button
+      type="button"
+      class="slider-nav recommended-cars-slider__nav recommended-cars-slider__nav--prev"
+      aria-label="Previous recommended cars"
+    ></button>
+
+    <button
+      type="button"
+      class="slider-nav slider-nav-next recommended-cars-slider__nav recommended-cars-slider__nav--next"
+      aria-label="Next recommended cars"
+    ></button>
+
+  </div>
+
+</section>
+
+{% endif %}

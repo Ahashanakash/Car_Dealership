@@ -1,0 +1,146 @@
+<div class="car-list-partial" id="carListPartial">
+
+  <div class="car-list-grid">
+
+    {% for car in cars %}
+      <article class="car-list-card js-car-list-card">
+
+        <!-- Car Image -->
+        <div class="car-list-card__media">
+          {% if car.image %}
+            <img src="{{ car.image.url }}" alt="{{ car.brand.name }} {{ car.car_model }}">
+          {% else %}
+            <div class="car-list-card__placeholder">
+              No Image
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Card Body -->
+        <div class="car-list-card__body">
+
+          <div class="car-list-card__brand-row">
+            {% if car.brand.logo %}
+              <span class="car-list-card__brand-logo">
+                <img src="{{ car.brand.logo.url }}" alt="{{ car.brand.name }}">
+              </span>
+            {% endif %}
+
+            <div>
+              <p class="car-list-card__brand-name">
+                {{ car.brand.name }}
+              </p>
+
+              <h3>
+                {{ car.car_model }}
+              </h3>
+            </div>
+          </div>
+
+          <div class="car-list-card__price-row">
+            <span>
+              Listed Price
+            </span>
+
+            <strong>
+              ${{ car.price }}
+            </strong>
+          </div>
+
+          <a href="{% url 'car_details' car.pk %}" class="car-type-btn car-type-btn--details">
+            <span>
+              View Details
+            </span>
+
+            <span aria-hidden="true">
+              →
+            </span>
+          </a>
+
+        </div>
+
+      </article>
+    {% empty %}
+
+      <div class="car-list-empty js-car-list-empty">
+        <div class="car-list-empty__icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 15L6 9.5C6.4 8.4 7.4 7.7 8.6 7.7H15.4C16.6 7.7 17.6 8.4 18 9.5L20 15"></path>
+            <path d="M4 15H20V19H17.5"></path>
+            <path d="M6.5 19H4.8C4.4 19 4 18.6 4 18.2V15"></path>
+            <path d="M7 19A2 2 0 1 0 7 15A2 2 0 0 0 7 19Z"></path>
+            <path d="M17 19A2 2 0 1 0 17 15A2 2 0 0 0 17 19Z"></path>
+          </svg>
+        </div>
+
+        <h3>
+          No cars found
+        </h3>
+
+        <p>
+          Try changing your filter options or clearing the current search.
+        </p>
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+  <!-- Pagination -->
+  {% if is_paginated %}
+
+    <nav class="car-list-pagination" aria-label="Car pagination">
+
+      {% if page_obj.has_previous %}
+        <a
+          class="car-list-pagination__btn"
+          hx-get="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}"
+          hx-target="#car-container"
+          hx-swap="innerHTML"
+          hx-push-url="true"
+        >
+          Previous
+        </a>
+      {% endif %}
+
+      <div class="car-list-pagination__numbers">
+
+        {% for num in page_obj.paginator.page_range %}
+
+          {% if page_obj.number == num %}
+            <span class="car-list-pagination__number is-active">
+              {{ num }}
+            </span>
+          {% else %}
+            <a
+              class="car-list-pagination__number"
+              hx-get="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ num }}"
+              hx-target="#car-container"
+              hx-swap="innerHTML"
+              hx-push-url="true"
+            >
+              {{ num }}
+            </a>
+          {% endif %}
+
+        {% endfor %}
+
+      </div>
+
+      {% if page_obj.has_next %}
+        <a
+          class="car-list-pagination__btn"
+          hx-get="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}"
+          hx-target="#car-container"
+          hx-swap="innerHTML"
+          hx-push-url="true"
+        >
+          Next
+        </a>
+      {% endif %}
+
+    </nav>
+
+  {% endif %}
+
+</div>

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Reset Password{% endblock %}
+
+{% block body %}
+
+<section class="auth-page reset-request-page" id="resetRequestPage">
+
+  <div class="auth-card auth-card--reset-request">
+
+    <!-- Left Form Side -->
+    <div class="auth-card__form-side">
+
+      <div class="auth-card__header">
+        <p class="auth-card__eyebrow">
+          Account Recovery
+        </p>
+
+        <h1>
+          Reset Your Password
+        </h1>
+
+        <p>
+          Enter your registered email address. We will send you a secure password reset link.
+        </p>
+      </div>
+
+      {% if messages %}
+        <div class="auth-alert-list">
+          {% for message in messages %}
+            <div class="auth-alert auth-alert--{{ message.tags }}" role="alert">
+              <span class="auth-alert__dot"></span>
+              <span>{{ message }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" class="auth-form reset-request-form" id="resetRequestForm">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="auth-alert auth-alert--danger" role="alert">
+            <span class="auth-alert__dot"></span>
+            <span>{{ form.non_field_errors }}</span>
+          </div>
+        {% endif %}
+
+        <div class="auth-form__group">
+          <label for="{{ form.email.id_for_label }}">
+            {{ form.email.label }}
+          </label>
+
+          <input
+            type="email"
+            name="{{ form.email.name }}"
+            id="{{ form.email.id_for_label }}"
+            value="{{ form.email.value|default_if_none:'' }}"
+            placeholder="Enter your registered email"
+            autocomplete="email"
+            required
+          >
+
+          {% if form.email.errors %}
+            <div class="auth-field-error">
+              {{ form.email.errors }}
+            </div>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="auth-btn auth-btn--primary auth-btn--full" id="resetRequestSubmitBtn">
+          <span class="auth-btn__text">
+            Send Reset Link
+          </span>
+
+          <span class="auth-btn__loader" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+
+        <p class="auth-form__footer-text">
+          Remember your password?
+          <a href="{% url 'login' %}">
+            Back to Login
+          </a>
+        </p>
+
+      </form>
+
+    </div>
+
+    <!-- Right Image Side -->
+    <div class="auth-card__image-side reset-request-page__image-side">
+      <img src="{% static 'images/reset-request-car.jpg' %}" alt="Password recovery for car dealership account">
+
+      <div class="auth-card__image-overlay">
+        <span>
+          Secure Recovery
+        </span>
+
+        <h2>
+          Recover access to your dealership account safely.
+        </h2>
+
+        <p>
+          A reset link will be sent to your email so you can create a new password and continue using your account.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}

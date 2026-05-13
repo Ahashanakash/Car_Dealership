@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{% block title %}Car Dealership{% endblock %}</title>
+	<link rel="stylesheet" href="{% static 'sass/style.css' %}">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://cdn.jsdelivr.net/npm/swiffy-slider@2.1.0/dist/css/swiffy-slider.css" rel="stylesheet"
+		crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<!-- bootstrap -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+	<!-- htmx CDN -->
+	<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+	<!-- <script src="{% static 'js/main.js' %}"></script> -->
+	<script type="module">
+		import { swiffyslider } from "https://cdn.jsdelivr.net/npm/swiffy-slider@2.1.0/dist/js/swiffy-slider.js";
+
+		window.swiffyslider = swiffyslider;
+
+		window.addEventListener("load", function () {
+			window.swiffyslider.init();
+		});
+	</script>
+</head>
+
+<body>
+	<!-- Navbar -->
+	<header class="site-header">
+		<nav class="main-navbar" aria-label="Main navigation">
+			<div class="main-navbar__container">
+
+				<!-- Logo -->
+				<a href="{% url 'home' %}" class="main-navbar__brand" aria-label="Car Dealership Home">
+					<img src="{% static 'banner/logo1.png' %}" alt="Car Dealership Logo" class="logo-img">
+				</a>
+
+				<!-- Desktop Navigation Links -->
+				<ul class="main-navbar__links">
+					<li>
+						<a href="{% url 'home' %}"
+							class="main-navbar__link {% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">
+							Home
+						</a>
+					</li>
+
+					<li>
+						<a href="{% url 'cars' %}"
+							class="main-navbar__link {% if request.resolver_match.url_name == 'cars' %}is-active{% endif %}">
+							Cars
+						</a>
+					</li>
+
+					<li>
+						<a href="{% url 'find_us' %}"
+							class="main-navbar__link {% if request.resolver_match.url_name == 'find_us' %}is-active{% endif %}">
+							Find Dealers
+						</a>
+					</li>
+				</ul>
+
+				<!-- Desktop Auth Area -->
+				<div class="main-navbar__actions">
+					{% if request.user.is_authenticated %}
+
+					{% if request.user.is_seller %}
+					<a href="{% url 'seller:seller_dashboard' %}" class="nav-btn nav-btn--ghost">
+						Seller Dashboard
+					</a>
+					{% endif %}
+
+					<a href="{% url 'profile' %}" class="main-navbar__profile">
+						<span class="main-navbar__avatar">
+							{{ request.user.username|slice:":1"|upper }}
+						</span>
+
+						<span class="main-navbar__profile-name">
+							{{ request.user.get_full_name|default:request.user.username }}
+						</span>
+					</a>
+
+					<form method="post" action="{% url 'logout' %}" class="main-navbar__logout-form">
+						{% csrf_token %}
+						<button type="submit" class="nav-btn nav-btn--danger">
+							Logout
+						</button>
+					</form>
+
+					{% else %}
+
+					<a href="{% url 'login' %}" class="nav-btn nav-btn--ghost">
+						Login
+					</a>
+
+					<a href="{% url 'signup' %}" class="nav-btn nav-btn--primary">
+						Sign Up
+					</a>
+
+					{% endif %}
+				</div>
+
+				<!-- Mobile Hamburger Button -->
+				<button class="main-navbar__toggle" type="button" aria-label="Open menu" aria-controls="mobileNavbar"
+					aria-expanded="false">
+					<span></span>
+					<span></span>
+					<span></span>
+				</button>
+
+			</div>
+		</nav>
+
+		<!-- Mobile Fullscreen Menu -->
+		<div class="mobile-navbar" id="mobileNavbar" aria-hidden="true">
+			<div class="mobile-navbar__content">
+
+				<div class="mobile-navbar__top">
+					
+
+					<button class="mobile-navbar__close" type="button" aria-label="Close menu">
+						&times;
+					</button>
+				</div>
+
+				<ul class="mobile-navbar__links">
+					<li>
+						<a href="{% url 'home' %}"
+							class="{% if request.resolver_match.url_name == 'home' %}is-active{% endif %}">
+							Home
+						</a>
+					</li>
+
+					<li>
+						<a href="{% url 'cars' %}"
+							class="{% if request.resolver_match.url_name == 'cars' %}is-active{% endif %}">
+							Cars
+						</a>
+					</li>
+
+					<li>
+						<a href="{% url 'find_us' %}"
+							class="{% if request.resolver_match.url_name == 'find_us' %}is-active{% endif %}">
+							Find Us
+						</a>
+					</li>
+				</ul>
+
+				<div class="mobile-navbar__actions">
+					{% if request.user.is_authenticated %}
+
+					<a href="{% url 'profile' %}" class="mobile-navbar__profile">
+						<span class="main-navbar__avatar">
+							{{ request.user.username|slice:":1"|upper }}
+						</span>
+
+						<span>
+							{{ request.user.get_full_name|default:request.user.username }}
+						</span>
+					</a>
+
+					{% if request.user.is_seller %}
+					<a href="{% url 'seller:seller_dashboard' %}" class="nav-btn nav-btn--ghost nav-btn--full">
+						Seller Dashboard
+					</a>
+					{% endif %}
+
+					<form method="post" action="{% url 'logout' %}">
+						{% csrf_token %}
+						<button type="submit" class="nav-btn nav-btn--danger nav-btn--full">
+							Logout
+						</button>
+					</form>
+
+					{% else %}
+
+					<a href="{% url 'signup' %}" class="nav-btn nav-btn--primary nav-btn--full">
+						Sign Up
+					</a>
+
+					<a href="{% url 'login' %}" class="nav-btn nav-btn--ghost nav-btn--full">
+						Login
+					</a>
+
+					{% endif %}
+				</div>
+
+			</div>
+		</div>
+	</header>
+
+
+	<!-- Main Body -->
+	<main>
+		{% block body %}
+
+		{% endblock %}
+	</main>
+
+
+	{% block extra_js %}{% endblock %}
+	<!-- Footer -->
+	<!-- Footer Section -->
+	<footer class="site-footer" id="siteFooter">
+
+		<div class="site-footer__inner">
+
+			<!-- Brand Column -->
+			<div class="site-footer__brand js-footer-block">
+				<a href="{% url 'home' %}" class="main-navbar__brand" aria-label="Car Dealership Home">
+					<img src="{% static 'banner/logo1.png' %}" alt="Car Dealership Logo" class="logo-img">
+				</a>
+
+				<p class="site-footer__description">
+					A modern car dealership platform for exploring vehicles, comparing prices, checking details, and
+					finding the right car with confidence.
+				</p>
+
+				<div class="site-footer__socials" aria-label="Social media links">
+
+					<a href="https://www.facebook.com/continentalmotorsbd/" aria-label="Facebook" target="_blank">
+						<svg viewBox="0 0 24 24" aria-hidden="true">
+							<path
+								d="M14 8.5H16.2V5.2C15.8 5.1 14.7 5 13.5 5C10.9 5 9.2 6.6 9.2 9.5V12H6.5V15.7H9.2V22H13V15.7H15.9L16.4 12H13V9.9C13 8.9 13.3 8.5 14 8.5Z">
+							</path>
+						</svg>
+					</a>
+
+					<a href="https://www.instagram.com/carcastlenyc/" aria-label="Instagram" target="_blank">
+						<svg viewBox="0 0 24 24" aria-hidden="true">
+							<rect x="4" y="4" width="16" height="16" rx="4"></rect>
+							<circle cx="12" cy="12" r="3.5"></circle>
+							<circle cx="16.7" cy="7.3" r="0.8"></circle>
+						</svg>
+					</a>
+
+					<a href="https://www.linkedin.com/company/car-dealership/" aria-label="LinkedIn" target="_blank">
+						<svg viewBox="0 0 24 24" aria-hidden="true">
+							<path d="M6.5 9.5H9.4V19H6.5V9.5Z"></path>
+							<path
+								d="M8 5C8.9 5 9.5 5.6 9.5 6.4C9.5 7.2 8.9 7.8 8 7.8C7.1 7.8 6.5 7.2 6.5 6.4C6.5 5.6 7.1 5 8 5Z">
+							</path>
+							<path
+								d="M11.2 9.5H14V10.8C14.4 10.1 15.3 9.3 16.7 9.3C19.2 9.3 20 10.9 20 13.5V19H17.1V14C17.1 12.8 16.9 11.8 15.6 11.8C14.3 11.8 14.1 12.9 14.1 14V19H11.2V9.5Z">
+							</path>
+						</svg>
+					</a>
+
+				</div>
+			</div>
+
+			<!-- Quick Links -->
+			<div class="site-footer__column js-footer-block">
+				<h3>Quick Links</h3>
+
+				<ul>
+					<li>
+						<a href="{% url 'home' %}">Home</a>
+					</li>
+
+					<li>
+						<a href="{% url 'cars' %}">Cars</a>
+					</li>
+
+					<li>
+						<a href="{% url 'find_us' %}">Find Us</a>
+					</li>
+
+					{% if request.user.is_authenticated %}
+					<li>
+						<a href="{% url 'profile' %}">Profile</a>
+					</li>
+					{% else %}
+					<li>
+						<a href="{% url 'login' %}">Login</a>
+					</li>
+
+					<li>
+						<a href="{% url 'signup' %}">Create Account</a>
+					</li>
+					{% endif %}
+				</ul>
+			</div>
+
+			<!-- Vehicle Types -->
+			<div class="site-footer__column js-footer-block">
+				<h3>Vehicle Types</h3>
+
+				<ul>
+					{% for cat in categories|slice:":6" %}
+					<li>
+						<a href="{% url 'category_wise_car' cat %}">
+							{{ cat|title }}
+						</a>
+					</li>
+					{% empty %}
+					<li>
+						<a href="{% url 'cars' %}">Sedan</a>
+					</li>
+					<li>
+						<a href="{% url 'cars' %}">Jeep</a>
+					</li>
+					<li>
+						<a href="{% url 'cars' %}">Pickup</a>
+					</li>
+					<li>
+						<a href="{% url 'cars' %}">Minivan</a>
+					</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			<!-- Contact / Newsletter -->
+			<div class="site-footer__column site-footer__contact js-footer-block">
+				<h3>Stay Updated</h3>
+
+				<p>
+					Get updates about new arrivals, featured cars, and dealership notices.
+				</p>
+
+				
+
+				<div class="site-footer__contact-list">
+					<span>Support: info@example.com</span>
+					<span>Location: Chattogram, Bangladesh</span>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="site-footer__bottom js-footer-bottom">
+			<p>
+				© {% now "Y" %} {{ site_name|default:"Car Dealership" }}. All rights reserved.
+			</p>
+
+			<div class="site-footer__legal">
+				<a href="#">Privacy Policy</a>
+				<a href="#">Terms</a>
+			</div>
+		</div>
+
+	</footer>
+
+	<!-- bootstrap -->
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+		crossorigin="anonymous"></script>
+	<!-- scripts -->
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.x/gsap.min.js"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+	<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+	<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const aiSearchInput = document.getElementById("ai-search-input");
+			const clearAiSearch = document.getElementById("clear-ai-search");
+
+			if (!aiSearchInput) {
+				return;
+			}
+
+			const placeholders = [
+				"AI Search: car under 30k",
+				"AI Search: blue car",
+				"AI Search: red car below 50k",
+				"AI Search: Toyota above 2018",
+				"AI Search: black car within 40k",
+				"AI Search: petrol car under 25k",
+				"AI Search: automatic car below 60k",
+				"AI Search: white car with low mileage",
+				"AI Search: SUV between 20k and 40k",
+				"AI Search: available car under 30k"
+			];
+
+			let index = 0;
+
+			setInterval(function () {
+				index = (index + 1) % placeholders.length;
+				aiSearchInput.setAttribute("placeholder", placeholders[index]);
+			}, 2000);
+
+			if (clearAiSearch) {
+				clearAiSearch.addEventListener("click", function () {
+					aiSearchInput.value = "";
+
+					const sidebarAiQuery = document.getElementById("sidebar-ai-query");
+
+					if (sidebarAiQuery) {
+						sidebarAiQuery.value = "";
+					}
+
+					const url = new URL(window.location.href);
+					url.searchParams.delete("ai_query");
+
+					window.history.replaceState({}, "", url.pathname + url.search);
+
+					if (window.htmx) {
+						htmx.ajax("GET", url.pathname + url.search, {
+							target: "#car-container",
+							swap: "innerHTML"
+						});
+					}
+				});
+			}
+		});
+	</script>
+	<script type="module">
+		import { swiffyslider } from 'https://cdn.jsdelivr.net/npm/swiffy-slider@2.1.0/dist/js/swiffy-slider.js';
+
+		window.addEventListener('load', function () {
+			swiffyslider.init();
+		});
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+</body>
+
+</html>

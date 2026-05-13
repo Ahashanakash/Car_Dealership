@@ -1,0 +1,108 @@
+<form
+  hx-post="{% url 'review-save' car.id %}"
+  hx-target="#review-section"
+  hx-swap="outerHTML"
+  class="car-review-form"
+  id="carReviewForm"
+>
+  {% csrf_token %}
+
+  <div class="car-review-form__header">
+    <p>
+      Customer Review
+    </p>
+
+    <h2>
+      {% if review %}
+        Update Your Review
+      {% else %}
+        Write a Review
+      {% endif %}
+    </h2>
+
+    <span>
+      Choose a rating and write your opinion about this car.
+    </span>
+  </div>
+
+  {% if form.non_field_errors %}
+    <div class="car-review-form__alert car-review-form__alert--danger" role="alert">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
+
+  <!-- Professional Star Rating -->
+  <div class="car-review-form__group">
+    <label>
+      Rating
+    </label>
+
+    <div class="car-review-rating" data-review-rating>
+      {% for value, label in form.rating.field.choices %}
+        {% if value %}
+          <input
+            type="radio"
+            name="{{ form.rating.name }}"
+            id="rating-{{ value }}"
+            value="{{ value }}"
+            {% if form.rating.value|stringformat:"s" == value|stringformat:"s" %}checked{% endif %}
+            required>
+
+          <label
+            for="rating-{{ value }}"
+            class="car-review-rating__star"
+            data-rating-value="{{ value }}"
+            title="{{ label }}"
+          >
+            ★
+          </label>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <p class="car-review-rating__hint">
+      Select your rating
+    </p>
+
+    {% if form.rating.errors %}
+      <div class="car-review-form__error">
+        {{ form.rating.errors }}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="car-review-form__group">
+    <label for="{{ form.body.id_for_label }}">
+      Review
+    </label>
+
+    <div class="car-review-form__control">
+      {{ form.body }}
+    </div>
+
+    {% if form.body.errors %}
+      <div class="car-review-form__error">
+        {{ form.body.errors }}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="car-review-form__actions">
+    <button type="button" class="car-review-form__btn car-review-form__btn--ghost" data-review-modal-close>
+      Cancel
+    </button>
+
+    <button type="submit" class="car-review-form__btn car-review-form__btn--primary" id="carReviewSubmitBtn">
+      <span class="car-review-form__btn-text">
+        Submit
+      </span>
+
+      <span class="car-review-form__btn-loader" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  </div>
+
+</form>

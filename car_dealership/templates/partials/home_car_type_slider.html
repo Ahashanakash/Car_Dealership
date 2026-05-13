@@ -1,0 +1,125 @@
+<!-- Car Slider -->
+<div class="car-type-slider-shell js-car-slider">
+
+  <div class="swiffy-slider vehicle-swiffy-slider slider-item-show3 slider-item-show2-sm slider-nav-visible slider-item-gap">
+
+    <ul class="slider-container">
+
+      {% for car in data %}
+        <li>
+          <article class="car-type-card js-car-type-card">
+
+            <!-- Image Top -->
+            <div class="car-type-card__media">
+
+              <span class="car-type-card__badge">
+                {{ car.category|title }}
+              </span>
+
+              {% if car.image %}
+                <img src="{{ car.image.url }}" alt="{{ car.car_model }}">
+              {% else %}
+                <div class="car-type-card__empty-image">
+                  No Image
+                </div>
+              {% endif %}
+
+              {% if car.brand.logo %}
+                <div class="car-type-card__brand-logo">
+                  <img src="{{ car.brand.logo.url }}" alt="{{ car.brand.name }}">
+                </div>
+              {% endif %}
+
+            </div>
+
+            <!-- Content -->
+            <div class="car-type-card__body">
+
+              <div class="car-type-card__meta-row">
+                <span class="car-type-card__year">
+                  {{ car.prod_year|default:"2026" }}
+                </span>
+              </div>
+
+              <div class="car-type-card__heading-row">
+                <div>
+                  <p class="car-type-card__brand">
+                    {{ car.brand.name }}
+                  </p>
+
+                  <h3 class="car-type-card__title">
+                    {{ car.car_model }}
+                  </h3>
+                </div>
+              </div>
+
+              <div class="car-type-card__info-grid">
+
+                <div class="car-type-card__info-item">
+                  <span class="car-type-card__info-label">
+                    Price
+                  </span>
+
+                  <strong class="car-type-card__info-value">
+                    ${{ car.price }}
+                  </strong>
+                </div>
+
+                <div class="car-type-card__info-item">
+                  <span class="car-type-card__info-label">
+                    Mileage
+                  </span>
+
+                  <strong class="car-type-card__info-value">
+                    {{ car.mileage|default:"--" }}
+                  </strong>
+                </div>
+
+              </div>
+
+              <div class="car-type-card__actions">
+                <a href="{% url 'car_details' car.id %}" class="car-type-btn car-type-btn--details">
+                  <span class="car-type-btn__text">
+                    Click me
+                  </span>
+
+                  <span class="car-type-btn__arrow">
+                    →
+                  </span>
+                </a>
+              </div>
+
+            </div>
+
+          </article>
+        </li>
+
+      {% empty %}
+
+        <li>
+          <div class="car-type-empty js-car-type-empty">
+            <h3>No cars available</h3>
+            <p>Please check another category or add vehicles from the dashboard.</p>
+          </div>
+        </li>
+
+      {% endfor %}
+
+    </ul>
+
+    <!-- Small Slider Buttons -->
+    <button
+      type="button"
+      class="slider-nav vehicle-slider-nav vehicle-slider-nav--prev"
+      aria-label="Previous cars"
+    ></button>
+
+    <button
+      type="button"
+      class="slider-nav slider-nav-next vehicle-slider-nav vehicle-slider-nav--next"
+      aria-label="Next cars"
+    ></button>
+
+  </div>
+
+</div>

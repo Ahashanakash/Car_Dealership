@@ -1,0 +1,26 @@
+<div id="like-section" class="car-like-section">
+
+  {% if user.is_authenticated %}
+
+    <button
+      type="button"
+      hx-post="{% url 'toggle_like' car.pk %}"
+      hx-target="#like-section"
+      hx-swap="outerHTML"
+      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+      class="car-like-btn {% if user in car.likes.all %}is-liked{% endif %}"
+    >
+      {% if user in car.likes.all %}
+        Liked
+      {% else %}
+        Like
+      {% endif %}
+    </button>
+
+  {% endif %}
+
+  <span class="car-like-count">
+    {{ car.likes.count }} likes
+  </span>
+
+</div>

@@ -1,0 +1,227 @@
+<section class="seller-edit-panel" id="sellerEditCarPanel">
+
+  <div class="seller-edit-panel__header">
+    <div>
+      <p class="seller-edit-panel__eyebrow">
+        Vehicle Management
+      </p>
+
+      <h2>
+        Edit Car
+      </h2>
+
+      <p>
+        Update the vehicle information carefully. Accurate details help buyers compare and understand the listing.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="seller-edit-panel__back-btn"
+      hx-get="{% url 'seller:your-cars' %}"
+      hx-target="#sellerContent"
+      hx-swap="innerHTML"
+    >
+      Back
+    </button>
+  </div>
+
+  {% if messages %}
+    <div class="seller-edit-message-list js-seller-edit-message-list">
+      {% for message in messages %}
+        <div class="seller-edit-message seller-edit-message--{{ message.tags }} js-seller-edit-message" role="alert">
+          <span class="seller-edit-message__dot"></span>
+
+          <span class="seller-edit-message__text">
+            {{ message }}
+          </span>
+
+          <button type="button" class="seller-edit-message__close" aria-label="Dismiss message">
+            ×
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form
+    method="POST"
+    enctype="multipart/form-data"
+    hx-post="{% url 'seller:update-car' car.id %}"
+    hx-target="#sellerContent"
+    hx-swap="innerHTML"
+    hx-encoding="multipart/form-data"
+    class="seller-edit-form"
+    id="sellerEditCarForm"
+  >
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="seller-edit-alert seller-edit-alert--danger" role="alert">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    {% if car.image %}
+      <div class="seller-edit-current-image">
+        <div class="seller-edit-current-image__preview">
+          <img src="{{ car.image.url }}" alt="{{ car.car_model }}">
+        </div>
+
+        <div class="seller-edit-current-image__content">
+          <span>
+            Current Image
+          </span>
+
+          <p>
+            Leave the image field empty if you want to keep the current vehicle image.
+          </p>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="seller-edit-form__grid">
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.brand.id_for_label }}">Brand</label>
+        <div class="seller-edit-form__control">{{ form.brand }}</div>
+        {% if form.brand.errors %}<div class="seller-edit-form__error">{{ form.brand.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.car_model.id_for_label }}">Car Model</label>
+        <div class="seller-edit-form__control">{{ form.car_model }}</div>
+        {% if form.car_model.errors %}<div class="seller-edit-form__error">{{ form.car_model.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.category.id_for_label }}">Category</label>
+        <div class="seller-edit-form__control">{{ form.category }}</div>
+        {% if form.category.errors %}<div class="seller-edit-form__error">{{ form.category.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.image.id_for_label }}">Image</label>
+        <div class="seller-edit-form__control">{{ form.image }}</div>
+        {% if form.image.errors %}<div class="seller-edit-form__error">{{ form.image.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.prod_year.id_for_label }}">Production Year</label>
+        <div class="seller-edit-form__control">{{ form.prod_year }}</div>
+        {% if form.prod_year.errors %}<div class="seller-edit-form__error">{{ form.prod_year.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.price.id_for_label }}">Price</label>
+        <div class="seller-edit-form__control">{{ form.price }}</div>
+        {% if form.price.errors %}<div class="seller-edit-form__error">{{ form.price.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.levy.id_for_label }}">Levy</label>
+        <div class="seller-edit-form__control">{{ form.levy }}</div>
+        {% if form.levy.errors %}<div class="seller-edit-form__error">{{ form.levy.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.mileage.id_for_label }}">Mileage</label>
+        <div class="seller-edit-form__control">{{ form.mileage }}</div>
+        {% if form.mileage.errors %}<div class="seller-edit-form__error">{{ form.mileage.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.fuel_type.id_for_label }}">Fuel Type</label>
+        <div class="seller-edit-form__control">{{ form.fuel_type }}</div>
+        {% if form.fuel_type.errors %}<div class="seller-edit-form__error">{{ form.fuel_type.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.gear_box_type.id_for_label }}">Gear Box Type</label>
+        <div class="seller-edit-form__control">{{ form.gear_box_type }}</div>
+        {% if form.gear_box_type.errors %}<div class="seller-edit-form__error">{{ form.gear_box_type.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.color.id_for_label }}">Color</label>
+        <div class="seller-edit-form__control">{{ form.color }}</div>
+        {% if form.color.errors %}<div class="seller-edit-form__error">{{ form.color.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.leather_interior.id_for_label }}">Leather Interior</label>
+        <div class="seller-edit-form__control">{{ form.leather_interior }}</div>
+        {% if form.leather_interior.errors %}<div class="seller-edit-form__error">{{ form.leather_interior.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.drive_wheels.id_for_label }}">Drive Wheels</label>
+        <div class="seller-edit-form__control">{{ form.drive_wheels }}</div>
+        {% if form.drive_wheels.errors %}<div class="seller-edit-form__error">{{ form.drive_wheels.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.doors.id_for_label }}">Doors</label>
+        <div class="seller-edit-form__control">{{ form.doors }}</div>
+        {% if form.doors.errors %}<div class="seller-edit-form__error">{{ form.doors.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.wheel.id_for_label }}">Wheel</label>
+        <div class="seller-edit-form__control">{{ form.wheel }}</div>
+        {% if form.wheel.errors %}<div class="seller-edit-form__error">{{ form.wheel.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.engine_volume.id_for_label }}">Engine Volume</label>
+        <div class="seller-edit-form__control">{{ form.engine_volume }}</div>
+        {% if form.engine_volume.errors %}<div class="seller-edit-form__error">{{ form.engine_volume.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.cylinders.id_for_label }}">Cylinders</label>
+        <div class="seller-edit-form__control">{{ form.cylinders }}</div>
+        {% if form.cylinders.errors %}<div class="seller-edit-form__error">{{ form.cylinders.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group">
+        <label for="{{ form.airbags.id_for_label }}">Airbags</label>
+        <div class="seller-edit-form__control">{{ form.airbags }}</div>
+        {% if form.airbags.errors %}<div class="seller-edit-form__error">{{ form.airbags.errors }}</div>{% endif %}
+      </div>
+
+      <div class="seller-edit-form__group seller-edit-form__group--full">
+        <label for="{{ form.description.id_for_label }}">Description</label>
+        <div class="seller-edit-form__control">{{ form.description }}</div>
+        {% if form.description.errors %}<div class="seller-edit-form__error">{{ form.description.errors }}</div>{% endif %}
+      </div>
+
+    </div>
+
+    <div class="seller-edit-form__actions">
+      <button type="submit" class="seller-edit-form__btn seller-edit-form__btn--primary" id="sellerEditCarSubmitBtn">
+        <span class="seller-edit-form__btn-text">
+          Update Car
+        </span>
+
+        <span class="seller-edit-form__btn-loader" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+
+      <button
+        type="button"
+        class="seller-edit-form__btn seller-edit-form__btn--ghost"
+        hx-get="{% url 'seller:your-cars' %}"
+        hx-target="#sellerContent"
+        hx-swap="innerHTML"
+      >
+        Cancel
+      </button>
+    </div>
+
+  </form>
+
+</section>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activate Your Account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .content {
+            padding: 40px 30px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .content h2 {
+            color: #667eea;
+            font-size: 22px;
+            margin-top: 0;
+        }
+        .content p {
+            margin: 15px 0;
+            font-size: 16px;
+        }
+        .activation-section {
+            background-color: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .activation-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 40px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .activation-btn:hover {
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+        .footer {
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+            color: #666666;
+            font-size: 14px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .footer p {
+            margin: 5px 0;
+        }
+        .link-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            color: #856404;
+            font-size: 14px;
+        }
+        .link-note p {
+            margin: 5px 0;
+        }
+        .break-word {
+            word-break: break-all;
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚗 Car Dealership</h1>
+            <p>Welcome! Let's get your account activated</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h2>Activate Your Account</h2>
+            <p>Hello,</p>
+            <p>Thank you for signing up with Car Dealership! We're excited to have you as part of our community.</p>
+            
+            <div class="activation-section">
+                <p><strong>To complete your registration, please activate your account by clicking the button below:</strong></p>
+            </div>
+
+            <div class="button-container">
+                <a href="{{ activation_url }}" target="_blank" class="activation-btn">Activate Your Account</a>
+            </div>
+
+            <p>This activation link will expire in <strong>24 hours</strong> for security reasons.</p>
+
+            <!-- Alternative Link -->
+            <div class="link-note">
+                <p><strong>If the button doesn't work, copy and paste this link in your browser:</strong></p>
+                <p class="break-word">{{ activation_url }}</p>
+            </div>
+
+            <p>If you didn't create this account, you can safely ignore this email.</p>
+
+            <p>Best regards,<br>
+            <strong>The Car Dealership Team</strong></p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>&copy; 2026 Car Dealership. All rights reserved.</p>
+            <p>This is an automated email. Please do not reply to this address.</p>
+            <p>If you have any questions, contact us at support@cardealership.com</p>
+        </div>
+    </div>
+</body>
+</html>

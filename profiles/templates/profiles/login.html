@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+
+<section class="auth-page" id="loginPage">
+
+  <div class="auth-card">
+
+    <!-- Left Form Side -->
+    <div class="auth-card__form-side">
+
+      {% if user.is_authenticated %}
+
+        <div class="auth-state-card">
+          <span class="auth-state-card__icon">
+            ✓
+          </span>
+
+          <h1>
+            You are already logged in
+          </h1>
+
+          <p>
+            You are currently logged in as <strong>{{ user.username }}</strong>.
+          </p>
+
+          <a href="{% url 'profile' %}" class="auth-btn auth-btn--primary">
+            Go to Profile
+          </a>
+        </div>
+
+      {% else %}
+
+        <div class="auth-card__header">
+          <p class="auth-card__eyebrow">
+            Welcome Back
+          </p>
+
+          <h1>
+            Login to Your Account
+          </h1>
+
+          <p>
+            Access your profile, explore saved cars, and manage your dealership activity.
+          </p>
+        </div>
+
+        {% if messages %}
+          <div class="auth-alert-list">
+            {% for message in messages %}
+              <div class="auth-alert auth-alert--{{ message.tags }}" role="alert">
+                <span class="auth-alert__dot"></span>
+                <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="post" class="auth-form" id="loginForm">
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="auth-alert auth-alert--error" role="alert">
+              <span class="auth-alert__dot"></span>
+              <span>{{ form.non_field_errors }}</span>
+            </div>
+          {% endif %}
+
+          <div class="auth-form__group">
+            <label for="id_email">
+              Email Address
+            </label>
+
+            <input
+              type="email"
+              name="email"
+              id="id_email"
+              value="{{ request.POST.email }}"
+              placeholder="Enter your email"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+          <div class="auth-form__group">
+            <div class="auth-form__label-row">
+              <label for="id_password">
+                Password
+              </label>
+
+              <a href="{% url 'password_reset' %}">
+                Forgot Password?
+              </a>
+            </div>
+
+            <div class="auth-password-field">
+              <input
+                type="password"
+                name="password"
+                id="id_password"
+                placeholder="Enter your password"
+                autocomplete="current-password"
+                required
+              >
+
+              <button type="button" class="auth-password-toggle" aria-label="Show password">
+                Show
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="auth-btn auth-btn--primary auth-btn--full" id="loginSubmitBtn">
+            <span class="auth-btn__text">
+              Login
+            </span>
+
+            <span class="auth-btn__loader" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+
+          <p class="auth-form__footer-text">
+            Do not have an account?
+            <a href="{% url 'signup' %}">
+              Create account
+            </a>
+          </p>
+
+        </form>
+
+      {% endif %}
+
+    </div>
+
+    <!-- Right Image Side -->
+    <div class="auth-card__image-side">
+      <img src="{% static 'banner/login.jpeg' %}" alt="Modern dealership car showroom">
+
+      <div class="auth-card__image-overlay">
+        <span>
+          Car Dealership System
+        </span>
+
+        <h2>
+          Find, compare, and choose your next car with confidence.
+        </h2>
+
+        <p>
+          Browse vehicles, review price insights, and connect with the dealership from one modern platform.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}

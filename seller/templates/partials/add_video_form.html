@@ -1,0 +1,102 @@
+<section class="seller-video-panel" id="sellerAddVideoPanel">
+
+  <div class="seller-video-panel__header">
+    <div>
+      <p class="seller-video-panel__eyebrow">
+        Vehicle Media
+      </p>
+
+      <h2>
+        Add Video
+      </h2>
+
+      <p>
+        Upload a video for <strong>{{ car.brand }} {{ car.car_model }}</strong>. A clear video helps buyers understand the car condition and presentation better.
+      </p>
+    </div>
+  </div>
+
+  {% if messages %}
+    <div class="seller-video-message-list js-seller-video-message-list">
+      {% for message in messages %}
+        <div class="seller-video-message seller-video-message--{{ message.tags }} js-seller-video-message" role="alert">
+          <span class="seller-video-message__dot"></span>
+
+          <span class="seller-video-message__text">
+            {{ message }}
+          </span>
+
+          <button type="button" class="seller-video-message__close" aria-label="Dismiss message">
+            ×
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form
+    method="post"
+    enctype="multipart/form-data"
+    hx-post="{% url 'seller:add-video' car.id %}"
+    hx-target="#sellerContent"
+    hx-swap="innerHTML"
+    class="seller-video-form"
+    id="sellerAddVideoForm"
+  >
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="seller-video-alert seller-video-alert--danger" role="alert">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <div class="seller-video-form__grid">
+      {% for field in form %}
+        <div class="seller-video-form__group seller-video-form__group--{{ field.name }}">
+
+          <label for="{{ field.id_for_label }}">
+            {{ field.label }}
+
+            {% if field.field.required %}
+              <span aria-hidden="true">*</span>
+            {% endif %}
+          </label>
+
+          <div class="seller-video-form__control">
+            {{ field }}
+          </div>
+
+          {% if field.help_text %}
+            <div class="seller-video-form__help">
+              {{ field.help_text|safe }}
+            </div>
+          {% endif %}
+
+          {% if field.errors %}
+            <div class="seller-video-form__error">
+              {{ field.errors }}
+            </div>
+          {% endif %}
+
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="seller-video-form__actions">
+      <button type="submit" class="seller-video-form__btn" id="sellerAddVideoSubmitBtn">
+        <span class="seller-video-form__btn-text">
+          Add Video
+        </span>
+
+        <span class="seller-video-form__btn-loader" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </div>
+
+  </form>
+
+</section>

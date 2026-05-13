@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Seller Dashboard{% endblock %}
+
+{% block body %}
+
+<section class="seller-dashboard-page" id="sellerDashboardPage">
+
+  <div class="seller-dashboard-layout">
+
+    <!-- Sidebar -->
+    <aside class="seller-dashboard-sidebar js-seller-sidebar">
+
+      <div class="seller-dashboard-sidebar__profile">
+
+        <div class="seller-dashboard-sidebar__avatar">
+          {% if request.user.profile.photo %}
+            <img src="{{ request.user.profile.photo.url }}" alt="{{ request.user.username }}">
+          {% else %}
+            <img src="{% static 'default.webp' %}" alt="{{ request.user.username }}">
+          {% endif %}
+        </div>
+
+        <div class="seller-dashboard-sidebar__user">
+          <h2>
+            {{ request.user.get_full_name|default:request.user.username }}
+          </h2>
+
+          <p>
+            @{{ request.user.username }}
+          </p>
+
+          <span>
+            Seller Dashboard
+          </span>
+        </div>
+
+      </div>
+
+      <nav class="seller-dashboard-nav" aria-label="Seller dashboard navigation">
+
+        <button
+          type="button"
+          class="seller-dashboard-nav__item is-active"
+          hx-get="{% url 'seller:add-car' %}"
+          hx-target="#sellerContent"
+          hx-swap="innerHTML"
+          data-seller-nav
+        >
+          <span class="seller-dashboard-nav__icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 5V19"></path>
+              <path d="M5 12H19"></path>
+            </svg>
+          </span>
+
+          <span>Add a Car</span>
+        </button>
+
+        <button
+          type="button"
+          class="seller-dashboard-nav__item"
+          hx-get="{% url 'seller:your-cars' %}"
+          hx-target="#sellerContent"
+          hx-swap="innerHTML"
+          data-seller-nav
+        >
+          <span class="seller-dashboard-nav__icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 15L6 9.5C6.4 8.4 7.4 7.7 8.6 7.7H15.4C16.6 7.7 17.6 8.4 18 9.5L20 15"></path>
+              <path d="M4 15H20V19H17.5"></path>
+              <path d="M6.5 19H4.8C4.4 19 4 18.6 4 18.2V15"></path>
+              <path d="M7 19A2 2 0 1 0 7 15A2 2 0 0 0 7 19Z"></path>
+              <path d="M17 19A2 2 0 1 0 17 15A2 2 0 0 0 17 19Z"></path>
+            </svg>
+          </span>
+
+          <span>Your Cars</span>
+        </button>
+
+        <button
+          type="button"
+          class="seller-dashboard-nav__item"
+          data-seller-static-panel="analytics"
+          data-seller-nav
+        >
+          <span class="seller-dashboard-nav__icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 19V11"></path>
+              <path d="M12 19V5"></path>
+              <path d="M19 19V9"></path>
+            </svg>
+          </span>
+
+          <span>Analytics</span>
+        </button>
+
+        <button
+          type="button"
+          class="seller-dashboard-nav__item"
+          data-seller-static-panel="predictions"
+          data-seller-nav
+        >
+          <span class="seller-dashboard-nav__icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 17L9 12L13 16L20 7"></path>
+              <path d="M15 7H20V12"></path>
+            </svg>
+          </span>
+
+          <span>Price Predictions</span>
+        </button>
+
+      </nav>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="seller-dashboard-main js-seller-main">
+
+      {% if messages %}
+        <div class="seller-message-list js-seller-message-list">
+          {% for message in messages %}
+            <div class="seller-message seller-message--{{ message.tags }} js-seller-message" role="alert">
+              <span class="seller-message__dot"></span>
+
+              <span class="seller-message__text">
+                {{ message }}
+              </span>
+
+              <button type="button" class="seller-message__close" aria-label="Dismiss message">
+                ×
+              </button>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="seller-dashboard-header js-seller-header">
+        <div>
+          <p class="seller-dashboard-header__eyebrow">
+            Seller Workspace
+          </p>
+
+          <h1>
+            Manage Your Vehicle Listings
+          </h1>
+
+          <p>
+            Add cars, review your listings, track performance, and prepare vehicles for buyers.
+          </p>
+        </div>
+      </div>
+
+      <section class="seller-dashboard-content" id="sellerContent">
+
+        <div class="seller-dashboard-empty js-seller-empty">
+
+          <div class="seller-dashboard-empty__icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 15L6 9.5C6.4 8.4 7.4 7.7 8.6 7.7H15.4C16.6 7.7 17.6 8.4 18 9.5L20 15"></path>
+              <path d="M4 15H20V19H17.5"></path>
+              <path d="M6.5 19H4.8C4.4 19 4 18.6 4 18.2V15"></path>
+              <path d="M7 19A2 2 0 1 0 7 15A2 2 0 0 0 7 19Z"></path>
+              <path d="M17 19A2 2 0 1 0 17 15A2 2 0 0 0 17 19Z"></path>
+            </svg>
+          </div>
+
+          <h2>
+            Select an option from the sidebar
+          </h2>
+
+          <p>
+            Start by adding a new car or reviewing your existing vehicle listings.
+          </p>
+
+          <div class="seller-dashboard-empty__cards">
+            <div class="seller-dashboard-mini-card">
+              <span>Add</span>
+              <strong>New Car</strong>
+              <p>Create a listing with details, image, price, and category.</p>
+            </div>
+
+            <div class="seller-dashboard-mini-card">
+              <span>Manage</span>
+              <strong>Your Cars</strong>
+              <p>Review and update the vehicles you have already listed.</p>
+            </div>
+
+            <div class="seller-dashboard-mini-card">
+              <span>Analyze</span>
+              <strong>Insights</strong>
+              <p>Use dashboard tools to understand listing performance.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+
+<section class="auth-page signup-page" id="signupPage">
+
+  <div class="auth-card auth-card--signup">
+
+    <!-- Left Form Side -->
+    <div class="auth-card__form-side">
+
+      {% if user.is_authenticated %}
+
+        <div class="auth-state-card">
+          <span class="auth-state-card__icon">
+            ✓
+          </span>
+
+          <h1>
+            You are already logged in
+          </h1>
+
+          <p>
+            You are currently signed in. You can continue browsing cars or visit your profile.
+          </p>
+
+          <a href="{% url 'profile' %}" class="auth-btn auth-btn--primary">
+            Go to Profile
+          </a>
+        </div>
+
+      {% else %}
+
+        <div class="auth-card__header">
+          <p class="auth-card__eyebrow">
+            Create Account
+          </p>
+
+          <h1>
+            Register for Car Dealership
+          </h1>
+
+          <p>
+            Create your account to explore cars, manage your profile, and access dealership features.
+          </p>
+        </div>
+
+        {% if messages %}
+          <div class="auth-alert-list">
+            {% for message in messages %}
+              <div class="auth-alert auth-alert--{{ message.tags }}" role="alert">
+                <span class="auth-alert__dot"></span>
+                <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <form method="post" class="auth-form signup-form" id="signupForm">
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="auth-alert auth-alert--danger" role="alert">
+              <span class="auth-alert__dot"></span>
+              <span>{{ form.non_field_errors }}</span>
+            </div>
+          {% endif %}
+
+          <!-- Username -->
+          <div class="auth-form__group">
+            <label for="{{ form.username.id_for_label }}">
+              {{ form.username.label }}
+            </label>
+
+            <input
+              type="text"
+              name="{{ form.username.name }}"
+              id="{{ form.username.id_for_label }}"
+              value="{{ form.username.value|default_if_none:'' }}"
+              placeholder="Choose a username"
+              autocomplete="username"
+              hx-get="{% url 'validate_username' %}"
+              hx-trigger="keyup changed delay:500ms"
+              hx-target="#username-feedback"
+              required
+            >
+
+            <div id="username-feedback" class="auth-live-feedback"></div>
+
+            {% if form.username.errors %}
+              <div class="auth-field-error">
+                {{ form.username.errors }}
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Name Fields -->
+          <div class="signup-form__grid">
+            <div class="auth-form__group">
+              <label for="{{ form.first_name.id_for_label }}">
+                {{ form.first_name.label }}
+              </label>
+
+              <input
+                type="text"
+                name="{{ form.first_name.name }}"
+                id="{{ form.first_name.id_for_label }}"
+                value="{{ form.first_name.value|default_if_none:'' }}"
+                placeholder="First name"
+                autocomplete="given-name"
+                {% if form.first_name.field.required %}required{% endif %}
+              >
+
+              {% if form.first_name.errors %}
+                <div class="auth-field-error">
+                  {{ form.first_name.errors }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="auth-form__group">
+              <label for="{{ form.last_name.id_for_label }}">
+                {{ form.last_name.label }}
+              </label>
+
+              <input
+                type="text"
+                name="{{ form.last_name.name }}"
+                id="{{ form.last_name.id_for_label }}"
+                value="{{ form.last_name.value|default_if_none:'' }}"
+                placeholder="Last name"
+                autocomplete="family-name"
+                {% if form.last_name.field.required %}required{% endif %}
+              >
+
+              {% if form.last_name.errors %}
+                <div class="auth-field-error">
+                  {{ form.last_name.errors }}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="auth-form__group">
+            <label for="{{ form.email.id_for_label }}">
+              {{ form.email.label }}
+            </label>
+
+            <input
+              type="email"
+              name="{{ form.email.name }}"
+              id="{{ form.email.id_for_label }}"
+              value="{{ form.email.value|default_if_none:'' }}"
+              placeholder="Enter your email"
+              autocomplete="email"
+              hx-get="{% url 'validate_email' %}"
+              hx-trigger="keyup changed delay:500ms"
+              hx-target="#email-feedback"
+              required
+            >
+
+            <div id="email-feedback" class="auth-live-feedback"></div>
+
+            {% if form.email.errors %}
+              <div class="auth-field-error">
+                {{ form.email.errors }}
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Password Fields -->
+          <div class="signup-form__grid">
+            <div class="auth-form__group">
+              <label for="{{ form.password1.id_for_label }}">
+                {{ form.password1.label }}
+              </label>
+
+              <div class="auth-password-field">
+                <input
+                  type="password"
+                  name="{{ form.password1.name }}"
+                  id="{{ form.password1.id_for_label }}"
+                  placeholder="Create password"
+                  autocomplete="new-password"
+                  required
+                >
+
+                <button type="button" class="auth-password-toggle" aria-label="Show password">
+                  Show
+                </button>
+              </div>
+
+              {% if form.password1.errors %}
+                <div class="auth-field-error">
+                  {{ form.password1.errors }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="auth-form__group">
+              <label for="{{ form.password2.id_for_label }}">
+                {{ form.password2.label }}
+              </label>
+
+              <div class="auth-password-field">
+                <input
+                  type="password"
+                  name="{{ form.password2.name }}"
+                  id="{{ form.password2.id_for_label }}"
+                  placeholder="Confirm password"
+                  autocomplete="new-password"
+                  required
+                >
+
+                <button type="button" class="auth-password-toggle" aria-label="Show password">
+                  Show
+                </button>
+              </div>
+
+              {% if form.password2.errors %}
+                <div class="auth-field-error">
+                  {{ form.password2.errors }}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Role -->
+          <div class="auth-form__group">
+            <label for="role">
+              Register As
+            </label>
+
+            <select name="role" id="role" class="auth-select" required>
+              <option value="">Select role</option>
+
+              <option value="customer" {% if form.role.value == "customer" %}selected{% endif %}>
+                Customer
+              </option>
+
+              <option value="seller" {% if form.role.value == "seller" %}selected{% endif %}>
+                Seller
+              </option>
+            </select>
+
+            {% if form.role.errors %}
+              <div class="auth-field-error">
+                {{ form.role.errors }}
+              </div>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="auth-btn auth-btn--primary auth-btn--full" id="registerBtn">
+            <span class="auth-btn__text">
+              Register
+            </span>
+
+            <span class="auth-btn__loader" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+
+          <p class="auth-form__footer-text">
+            Already have an account?
+            <a href="{% url 'login' %}">
+              Login here
+            </a>
+          </p>
+
+        </form>
+
+      {% endif %}
+
+    </div>
+
+    <!-- Right Image Side -->
+    <div class="auth-card__image-side signup-page__image-side">
+      <img src="{% static 'banner/signup.jpeg' %}" alt="Car dealership showroom">
+
+      <div class="auth-card__image-overlay">
+        <span>
+          Join the Platform
+        </span>
+
+        <h2>
+          Start your dealership journey with a secure account.
+        </h2>
+
+        <p>
+          Register as a customer to explore vehicles or as a seller to manage car listings from your dashboard.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+<article class="car-review-card js-car-review-card">
+
+  <div class="car-review-card__top">
+
+    <div class="car-review-card__user">
+
+      <div class="car-review-card__avatar">
+        {% if review.user.profile.photo %}
+          <img src="{{ review.user.profile.photo.url }}" alt="{{ review.user.username }}">
+        {% else %}
+          <span>
+            {{ review.user.username|first|upper }}
+          </span>
+        {% endif %}
+      </div>
+
+      <div>
+        <h3>
+          {{ review.user.username }}
+        </h3>
+
+        <p>
+          {{ review.created_at }}
+        </p>
+      </div>
+
+    </div>
+
+    <div class="car-review-card__rating" aria-label="{{ review.rating }} out of 5 stars">
+      {% for i in "12345" %}
+        {% if forloop.counter <= review.rating %}
+          <span class="is-filled">★</span>
+        {% else %}
+          <span>☆</span>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <div class="car-review-card__body">
+    <p>
+      {{ review.body }}
+    </p>
+  </div>
+
+</article>

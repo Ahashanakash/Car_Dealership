@@ -1,0 +1,71 @@
+<section
+  class="car-review-section"
+  id="review-section"
+  {% if close_review_modal %}data-close-review-modal="true"{% endif %}
+>
+
+  <div class="car-review-section__header">
+
+    <div>
+      <p class="car-review-section__eyebrow">
+        Customer Feedback
+      </p>
+
+      <h2>
+        Reviews
+      </h2>
+
+      <p>
+        Read buyer opinions and share your own experience about this vehicle.
+      </p>
+    </div>
+
+    {% if user.is_authenticated %}
+      <button
+        type="button"
+        class="car-review-section__btn"
+        hx-get="{% url 'review-modal' car.id %}"
+        hx-target="#modal-container"
+        hx-swap="innerHTML"
+      >
+        {% if user_review %}
+          Update Review
+        {% else %}
+          Give Review
+        {% endif %}
+      </button>
+    {% endif %}
+
+  </div>
+
+  <div class="car-review-section__list" id="review-list">
+
+    {% for review in reviews %}
+
+      {% include "partials/review_item.html" %}
+
+    {% empty %}
+
+      <div class="car-review-empty">
+        <div class="car-review-empty__icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 5H20V16H7L4 19V5Z"></path>
+            <path d="M8 9H16"></path>
+            <path d="M8 12H13"></path>
+          </svg>
+        </div>
+
+        <h3>
+          No reviews yet
+        </h3>
+
+        <p>
+          Be the first to share a review for this car.
+        </p>
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+</section>

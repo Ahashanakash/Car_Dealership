@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Dashboard{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2>Welcome, {{ user.username }} this is customer dashboard</h2>
+
+    <!-- Messages -->
+    {% if messages %}
+        <ul class="list-group mb-3">
+            {% for message in messages %}
+                <li class="list-group-item list-group-item-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+</div>
+{% endblock %}

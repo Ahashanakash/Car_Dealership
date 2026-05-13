@@ -1,0 +1,295 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}Profile{% endblock%} 
+{% block body %}
+
+<section class="profile-page" id="profilePage">
+  <div class="profile-layout">
+    <!-- LEFT SIDEBAR -->
+    <aside class="profile-sidebar js-profile-sidebar">
+      <div class="profile-sidebar__user">
+        <div class="profile-sidebar__avatar">
+          {% if request.user.profile.photo %}
+          <img
+            src="{{ request.user.profile.photo.url }}"
+            alt="{{ request.user.username }}"
+          />
+          {% else %}
+          <img
+            src="{% static 'default.webp' %}"
+            alt="{{ request.user.username }}"
+          />
+          {% endif %}
+        </div>
+
+        <div class="profile-sidebar__user-info">
+          <h2>
+            {{ request.user.get_full_name|default:request.user.username }}
+          </h2>
+
+          <p>@{{ request.user.username }}</p>
+
+          <span>
+            {% if request.user.is_seller %} Seller Account {% else %} Customer
+            Account {% endif %}
+          </span>
+        </div>
+      </div>
+
+      <nav class="profile-sidebar__nav" aria-label="Profile navigation">
+        <a
+          href="{% url 'profile' %}"
+          class="profile-sidebar__link {% if request.resolver_match.url_name == 'profile' %}is-active{% endif %}"
+          data-profile-link
+        >
+          <span class="profile-sidebar__icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 12A4 4 0 1 0 12 4A4 4 0 0 0 12 12Z"></path>
+              <path
+                d="M4 21C4.8 16.8 7.7 14.5 12 14.5C16.3 14.5 19.2 16.8 20 21"
+              ></path>
+            </svg>
+          </span>
+
+          <span> Personal Info </span>
+        </a>
+
+        <a
+          href="{% url 'password_change' %}"
+          class="profile-sidebar__link {% if request.resolver_match.url_name == 'password_change' %}is-active{% endif %}"
+          data-profile-link
+        >
+          <span class="profile-sidebar__icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 11V8A5 5 0 0 1 17 8V11"></path>
+              <path d="M6 11H18V21H6V11Z"></path>
+              <path d="M12 15.5V17.5"></path>
+            </svg>
+          </span>
+
+          <span> Password </span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- RIGHT CONTENT -->
+    <main class="profile-main js-profile-main">
+      {% if messages %}
+      <div class="profile-message-list js-profile-message-list">
+        {% for message in messages %}
+        <div
+          class="profile-message profile-message--{{ message.tags }} js-profile-message"
+          role="alert"
+        >
+          <span class="profile-message__dot"></span>
+
+          <span class="profile-message__text"> {{ message }} </span>
+
+          <button
+            type="button"
+            class="profile-message__close"
+            aria-label="Dismiss message"
+          >
+            ×
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% block profile_content %}
+
+      <!-- PERSONAL INFO SECTION -->
+      <section class="profile-panel" id="personalInfoPanel">
+        <div class="profile-panel__header">
+          <div>
+            <p class="profile-panel__eyebrow">Account Details</p>
+
+            <h1>Personal Information</h1>
+
+            <p>
+              Update your basic profile details, contact information, and
+              profile photo.
+            </p>
+          </div>
+        </div>
+
+        <form
+          method="POST"
+          enctype="multipart/form-data"
+          class="profile-form"
+          id="profileInfoForm"
+        >
+          {% csrf_token %}
+
+          <div class="profile-form__grid">
+            <!-- First Name -->
+            <div class="profile-form__group">
+              <label for="{{ form.first_name.id_for_label }}">
+                {{ form.first_name.label }}
+              </label>
+
+              <input
+                type="text"
+                name="{{ form.first_name.name }}"
+                id="{{ form.first_name.id_for_label }}"
+                value="{{ form.first_name.value|default_if_none:'' }}"
+                placeholder="Enter first name"
+              />
+
+              {% for error in form.first_name.errors %}
+              <div class="profile-form__error">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Last Name -->
+            <div class="profile-form__group">
+              <label for="{{ form.last_name.id_for_label }}">
+                {{ form.last_name.label }}
+              </label>
+
+              <input
+                type="text"
+                name="{{ form.last_name.name }}"
+                id="{{ form.last_name.id_for_label }}"
+                value="{{ form.last_name.value|default_if_none:'' }}"
+                placeholder="Enter last name"
+              />
+
+              {% for error in form.last_name.errors %}
+              <div class="profile-form__error">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Phone -->
+            <div class="profile-form__group">
+              <label for="{{ form.phone.id_for_label }}">
+                {{ form.phone.label }}
+              </label>
+
+              <input
+                type="text"
+                name="{{ form.phone.name }}"
+                id="{{ form.phone.id_for_label }}"
+                value="{{ form.phone.value|default_if_none:'' }}"
+                placeholder="Enter phone number"
+              />
+
+              {% for error in form.phone.errors %}
+              <div class="profile-form__error">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- HTML for the date picker input -->
+            <div class="profile-form__group">
+              <label for="{{ form.date_of_birth.id_for_label }}">
+                {{ form.date_of_birth.label }}
+              </label>
+
+              <input
+                class="text-white datepicker"
+                type="date"
+                name="{{ form.date_of_birth.name }}"
+                id="{{ form.date_of_birth.id_for_label }}"
+                value="{{ form.date_of_birth.value|default_if_none:'' }}"
+              />
+
+              {% for error in form.date_of_birth.errors %}
+              <div class="profile-form__error">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="profile-form__group">
+            <label for="{{ form.address.id_for_label }}">
+              {{ form.address.label }}
+            </label>
+
+            <textarea
+              name="{{ form.address.name }}"
+              id="{{ form.address.id_for_label }}"
+              rows="4"
+              placeholder="Enter your address"
+            >
+{{ form.address.value|default_if_none:'' }}</textarea
+            >
+
+            {% for error in form.address.errors %}
+            <div class="profile-form__error">{{ error }}</div>
+            {% endfor %}
+          </div>
+
+          <div class="profile-form__grid">
+            <!-- Gender -->
+            <div class="profile-form__group">
+              <label for="{{ form.gender.id_for_label }}">
+                {{ form.gender.label }}
+              </label>
+
+              <select
+                name="{{ form.gender.name }}"
+                id="{{ form.gender.id_for_label }}"
+              >
+                {% for value, label in form.gender.field.choices %}
+                <option
+                  value="{{ value }}"
+                  {%
+                  if
+                  form.gender.value=""
+                  ="value"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  {{ label }}
+                </option>
+                {% endfor %}
+              </select>
+
+              {% for error in form.gender.errors %}
+              <div class="profile-form__error">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Photo -->
+            <div class="profile-form__group">
+              <label for="{{ form.photo.id_for_label }}">
+                {{ form.photo.label }}
+              </label>
+
+              <input
+                type="file"
+                name="{{ form.photo.name }}"
+                id="{{ form.photo.id_for_label }}"
+                accept="image/*"
+              />
+
+              {% for error in form.photo.errors %}
+              <div class="profile-form__error">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="profile-form__actions">
+            <button
+              type="submit"
+              class="profile-btn profile-btn--primary"
+              id="profileUpdateBtn"
+            >
+              <span class="profile-btn__text"> Update Personal Info </span>
+
+              <span class="profile-btn__loader" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      {% endblock profile_content %}
+    </main>
+  </div>
+</section>
+
+{% endblock %}

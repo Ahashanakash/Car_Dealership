@@ -1,0 +1,46 @@
+<div
+  class="car-review-modal js-car-review-modal"
+  hx-on:close-modal.window="this.remove()"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="carReviewModalTitle"
+>
+
+  <div class="car-review-modal__backdrop" data-review-modal-close></div>
+
+  <div class="car-review-modal__dialog">
+
+    <div class="car-review-modal__header">
+
+      <div>
+        <p>
+          Customer Feedback
+        </p>
+
+        <h2 id="carReviewModalTitle">
+          {% if review %}
+            Update Review
+          {% else %}
+            Give Review
+          {% endif %}
+        </h2>
+      </div>
+
+      <button
+        type="button"
+        class="car-review-modal__close"
+        data-review-modal-close
+        aria-label="Close review modal"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="car-review-modal__body">
+      {% include "partials/review_form.html" %}
+    </div>
+
+  </div>
+
+</div>

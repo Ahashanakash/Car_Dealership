@@ -1,0 +1,104 @@
+<section class="seller-form-panel" id="sellerAddCarPanel">
+
+  <div class="seller-form-panel__header">
+    <div>
+      <p class="seller-form-panel__eyebrow">
+        Vehicle Listing
+      </p>
+
+      <h2>
+        Add a New Car
+      </h2>
+
+      <p>
+        Fill in the vehicle details carefully. Clear information helps buyers compare and understand your listing.
+      </p>
+    </div>
+  </div>
+
+  {% if messages %}
+    <div class="seller-form-message-list js-seller-form-message-list">
+      {% for message in messages %}
+        <div class="seller-form-message seller-form-message--{{ message.tags }} js-seller-form-message" role="alert">
+          <span class="seller-form-message__dot"></span>
+
+          <span class="seller-form-message__text">
+            {{ message }}
+          </span>
+
+          <button type="button" class="seller-form-message__close" aria-label="Dismiss message">
+            ×
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <form
+    method="post"
+    enctype="multipart/form-data"
+    hx-post="{% url 'seller:add-car' %}"
+    hx-target="#sellerContent"
+    hx-swap="innerHTML"
+    class="seller-car-form"
+    id="sellerAddCarForm"
+  >
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="seller-form-alert seller-form-alert--danger" role="alert">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <div class="seller-car-form__grid">
+
+      {% for field in form %}
+        <div class="seller-car-form__group seller-car-form__group--{{ field.name }}">
+
+          <label for="{{ field.id_for_label }}">
+            {{ field.label }}
+
+            {% if field.field.required %}
+              <span aria-hidden="true">*</span>
+            {% endif %}
+          </label>
+
+          <div class="seller-car-form__control">
+            {{ field }}
+          </div>
+
+          {% if field.help_text %}
+            <div class="seller-car-form__help">
+              {{ field.help_text|safe }}
+            </div>
+          {% endif %}
+
+          {% if field.errors %}
+            <div class="seller-car-form__error">
+              {{ field.errors }}
+            </div>
+          {% endif %}
+
+        </div>
+      {% endfor %}
+
+    </div>
+
+    <div class="seller-car-form__actions">
+      <button type="submit" class="seller-car-form__btn" id="sellerAddCarSubmitBtn">
+        <span class="seller-car-form__btn-text">
+          Add Car
+        </span>
+
+        <span class="seller-car-form__btn-loader" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    </div>
+
+  </form>
+
+</section>

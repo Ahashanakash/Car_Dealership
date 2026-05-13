@@ -1,0 +1,201 @@
+<section class="seller-cars-panel" id="sellerCarsPanel">
+
+  <div class="seller-cars-panel__header">
+    <div>
+      <p class="seller-cars-panel__eyebrow">
+        Inventory Management
+      </p>
+
+      <h2>
+        Your Cars
+      </h2>
+
+      <p>
+        Review your listed vehicles, manage details, add videos, and check AI price analysis.
+      </p>
+    </div>
+  </div>
+
+  <div class="seller-cars-list">
+
+    {% for car in cars %}
+      <article class="seller-car-card js-seller-car-card" id="car-{{ car.id }}">
+
+        <!-- Image -->
+        <div class="seller-car-card__media">
+          {% if car.image %}
+            <img src="{{ car.image.url }}" alt="{{ car.car_model }}">
+          {% else %}
+            <div class="seller-car-card__placeholder">
+              No Image
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Main Info -->
+        <div class="seller-car-card__content">
+
+          <div class="seller-car-card__top">
+
+            <div class="seller-car-card__brand-row">
+              {% if car.brand.logo %}
+                <span class="seller-car-card__brand-logo">
+                  <img src="{{ car.brand.logo.url }}" alt="{{ car.brand.name }} Logo">
+                </span>
+              {% endif %}
+
+              <div>
+                <p class="seller-car-card__brand-name">
+                  {{ car.brand.name }}
+                </p>
+
+                <h3>
+                  {{ car.brand.name }} {{ car.car_model }}
+                </h3>
+              </div>
+            </div>
+
+            <div class="seller-car-card__price">
+              <span>
+                Seller Price
+              </span>
+
+              <strong>
+                ${{ car.price }}
+              </strong>
+            </div>
+
+          </div>
+
+          <!-- AI Price Prediction -->
+          <div class="seller-car-card__prediction">
+
+            {% if car.price_prediction %}
+
+              <div class="seller-car-card__prediction-header">
+
+                {% if car.price_prediction.price_status == "high" %}
+                  <span class="seller-price-badge seller-price-badge--high">
+                    High Price
+                  </span>
+                {% elif car.price_prediction.price_status == "low" %}
+                  <span class="seller-price-badge seller-price-badge--low">
+                    Low Price
+                  </span>
+                {% elif car.price_prediction.price_status == "regular" %}
+                  <span class="seller-price-badge seller-price-badge--regular">
+                    Regular Price
+                  </span>
+                {% else %}
+                  <span class="seller-price-badge seller-price-badge--neutral">
+                    Insufficient Data
+                  </span>
+                {% endif %}
+
+              </div>
+
+              {% if car.price_prediction.predicted_price %}
+                <div class="seller-car-card__prediction-grid">
+
+                  <div class="seller-car-card__prediction-item">
+                    <span>
+                      Market Price
+                    </span>
+
+                    <strong>
+                      ${{ car.price_prediction.predicted_price }}
+                    </strong>
+                  </div>
+
+                  <div class="seller-car-card__prediction-item">
+                    <span>
+                      Regular Range
+                    </span>
+
+                    <strong>
+                      ${{ car.price_prediction.lower_price_limit }} - ${{ car.price_prediction.upper_price_limit }}
+                    </strong>
+                  </div>
+
+                  
+
+                </div>
+              {% endif %}
+
+            {% else %}
+
+              <span class="seller-price-badge seller-price-badge--neutral">
+                Prediction Not Generated
+              </span>
+
+            {% endif %}
+
+          </div>
+
+        </div>
+
+        <!-- Actions -->
+        <div class="seller-car-card__actions">
+
+          <button
+            type="button"
+            class="seller-car-action seller-car-action--edit"
+            hx-get="{% url 'seller:update-car' car.id %}"
+            hx-target="#sellerContent"
+            hx-swap="innerHTML"
+          >
+            Edit
+          </button>
+
+          <button
+            type="button"
+            class="seller-car-action seller-car-action--delete"
+            hx-delete="{% url 'seller:delete-car' car.id %}"
+            hx-target="#car-{{ car.id }}"
+            hx-swap="outerHTML"
+            hx-confirm="Are you sure you want to delete this car?"
+          >
+            Delete
+          </button>
+
+          <button
+            type="button"
+            class="seller-car-action seller-car-action--video"
+            hx-get="{% url 'seller:add-video' car.id %}"
+            hx-target="#sellerContent"
+            hx-swap="innerHTML"
+          >
+            Add Video
+          </button>
+
+        </div>
+
+      </article>
+
+    {% empty %}
+
+      <div class="seller-cars-empty">
+        <div class="seller-cars-empty__icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 15L6 9.5C6.4 8.4 7.4 7.7 8.6 7.7H15.4C16.6 7.7 17.6 8.4 18 9.5L20 15"></path>
+            <path d="M4 15H20V19H17.5"></path>
+            <path d="M6.5 19H4.8C4.4 19 4 18.6 4 18.2V15"></path>
+            <path d="M7 19A2 2 0 1 0 7 15A2 2 0 0 0 7 19Z"></path>
+            <path d="M17 19A2 2 0 1 0 17 15A2 2 0 0 0 17 19Z"></path>
+          </svg>
+        </div>
+
+        <h3>
+          No cars added yet
+        </h3>
+
+        <p>
+          Start by adding your first vehicle listing from the seller dashboard.
+        </p>
+      </div>
+
+    {% endfor %}
+
+  </div>
+
+</section>

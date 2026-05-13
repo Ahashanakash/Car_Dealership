@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load embed_video_tags %}
+
+{% block title %}
+Car List
+{% endblock %}
+
+{% block body %}
+
+<section class="car-list-dashboard" id="carListDashboard">
+
+  <div class="car-list-dashboard__header">
+    <div>
+      <p class="car-list-dashboard__eyebrow">
+        Vehicle Inventory
+      </p>
+
+      <h1>
+        Browse Available Cars
+      </h1>
+
+      <p>
+        Filter vehicles by brand, price, year, category, fuel type, color, and specifications.
+      </p>
+    </div>
+  </div>
+
+  <div class="car-list-dashboard__layout">
+
+    <!-- FILTER SIDEBAR -->
+    <aside class="car-filter-panel js-car-filter-panel">
+
+      <div class="car-filter-panel__top">
+        <div>
+          <h2>
+            Filter Cars
+          </h2>
+
+          <p>
+            Refine your search using vehicle details.
+          </p>
+        </div>
+
+        <a href="{% url 'cars' %}" class="car-filter-panel__reset">
+          Reset
+        </a>
+      </div>
+
+      <form
+        id="filter-form"
+        class="car-filter-form"
+        hx-get="{% url 'cars' %}"
+        hx-target="#car-container"
+        hx-swap="innerHTML"
+        hx-push-url="true"
+        hx-trigger="input changed delay:450ms, change"
+      >
+        <input type="hidden" name="ai_query" id="sidebar-ai-query" value="{{ current_filters.ai_query }}">
+
+        <!-- Brand -->
+        <div class="car-filter-group">
+          <label for="filterBrand">
+            Brand
+          </label>
+
+          <select id="filterBrand" name="brand">
+            <option value="" {% if not current_filters.brand %}selected{% endif %}>
+              All Brands
+            </option>
+
+            {% for b in brands %}
+              {% with brand_id=b.id|stringformat:"s" %}
+                <option value="{{ b.id }}" {% if current_filters.brand == brand_id %}selected{% endif %}>
+                  {{ b.name }}
+                </option>
+              {% endwith %}
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Price Range with Draggable Handles -->
+        <div
+          class="car-filter-group car-filter-price"
+          data-price-min="{{ current_filters.min_price|default:'0' }}"
+          data-price-max="{{ current_filters.max_price|default:'200000' }}"
+          data-range-min="0"
+          data-range-max="200000"
+        >
+          <div class="car-filter-group__row">
+            <label>
+              Price Range
+            </label>
+
+            <span class="car-filter-price__value">
+              <span id="priceMinLabel">${{ current_filters.min_price|default:'0' }}</span>
+              —
+              <span id="priceMaxLabel">${{ current_filters.max_price|default:'200000' }}</span>
+            </span>
+          </div>
+
+          <div class="car-filter-price__slider">
+            <div class="car-filter-price__track"></div>
+            <div class="car-filter-price__range" id="priceRangeFill"></div>
+
+            <input
+              type="range"
+              name="min_price"
+              id="minPriceRange"
+              min="0"
+              max="200000"
+              step="500"
+              value="{{ current_filters.min_price|default:'0' }}"
+              aria-label="Minimum price"
+            >
+
+            <input
+              type="range"
+              name="max_price"
+              id="maxPriceRange"
+              min="0"
+              max="200000"
+              step="500"
+              value="{{ current_filters.max_price|default:'200000' }}"
+              aria-label="Maximum price"
+            >
+          </div>
+
+          <div class="car-filter-price__quick">
+            <button type="button" data-price-min="0" data-price-max="30000">
+              Under 30k
+            </button>
+
+            <button type="button" data-price-min="30000" data-price-max="60000">
+              30k - 60k
+            </button>
+
+            <button type="button" data-price-min="60000" data-price-max="100000">
+              60k - 100k
+            </button>
+          </div>
+
+          <p class="car-filter-price__hint">
+            Drag the handles to adjust minimum and maximum price.
+          </p>
+        </div>
+
+        <!-- Year -->
+        <div class="car-filter-group">
+          <label>
+            Year
+          </label>
+
+          <div class="car-filter-form__split">
+            <input
+              type="number"
+              name="min_year"
+              placeholder="Min year"
+              value="{{ current_filters.min_year }}"
+            >
+
+            <input
+              type="number"
+              name="max_year"
+              placeholder="Max year"
+              value="{{ current_filters.max_year }}"
+            >
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="car-filter-group">
+          <label for="filterCategory">
+            Category
+          </label>
+
+          <select id="filterCategory" name="category">
+            <option value="" {% if not current_filters.category %}selected{% endif %}>
+              All Categories
+            </option>
+
+            {% for key, value in category %}
+              <option value="{{ key }}" {% if current_filters.category == key %}selected{% endif %}>
+                {{ value }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Fuel -->
+        <div class="car-filter-group">
+          <label for="filterFuel">
+            Fuel Type
+          </label>
+
+          <select id="filterFuel" name="fuel_type">
+            <option value="">
+              All Fuel Types
+            </option>
+
+            {% for key, value in fuel_types %}
+              <option value="{{ key }}" {% if current_filters.fuel_type == key %}selected{% endif %}>
+                {{ value }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Leather -->
+        <div class="car-filter-group">
+          <label for="filterLeather">
+            Leather Interior
+          </label>
+
+          <select id="filterLeather" name="leather_interior">
+            <option value="">
+              All
+            </option>
+
+            {% for key, value in leathers %}
+              <option value="{{ key }}" {% if current_filters.leather_interior == key %}selected{% endif %}>
+                {{ value }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Color -->
+        <div class="car-filter-group">
+          <label for="filterColor">
+            Color
+          </label>
+
+          <select id="filterColor" name="color">
+            <option value="">
+              All Colors
+            </option>
+
+            {% for key, value in colors %}
+              <option value="{{ key }}" {% if current_filters.color == key %}selected{% endif %}>
+                {{ value }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Cylinders -->
+        <div class="car-filter-group">
+          <label for="filterCylinders">
+            Cylinders
+          </label>
+
+          <input
+            id="filterCylinders"
+            type="number"
+            name="cylinders"
+            placeholder="Example: 4"
+            value="{{ current_filters.cylinders }}"
+          >
+        </div>
+
+        <!-- Engine -->
+        <div class="car-filter-group">
+          <label for="filterEngine">
+            Engine Volume
+          </label>
+
+          <input
+            id="filterEngine"
+            type="text"
+            name="engine_volume"
+            placeholder="Example: 2.0"
+            value="{{ current_filters.engine_volume }}"
+          >
+        </div>
+
+      </form>
+
+    </aside>
+
+    <!-- CAR CONTENT -->
+    <main class="car-list-main js-car-list-main">
+
+      <!-- AI SEARCH -->
+      <section class="car-ai-search-card js-car-ai-search">
+
+        <div class="car-ai-search-card__content">
+          <p>
+            AI Search
+          </p>
+
+          <h2>
+            Search with natural language
+          </h2>
+        </div>
+
+        <form method="GET" action="{% url 'cars' %}" class="car-ai-search-form" id="carAiSearchForm">
+          <input
+            type="text"
+            name="ai_query"
+            id="ai-search-input"
+            placeholder="AI Search: car under 30k"
+            value="{{ current_filters.ai_query }}"
+          >
+
+          <button type="button" id="clear-ai-search" class="car-ai-search-form__clear" aria-label="Clear AI search">
+            ×
+          </button>
+
+          <button type="submit" class="car-type-btn car-type-btn--details">
+            AI Search
+          </button>
+        </form>
+
+      </section>
+
+      <!-- RESULTS -->
+      <section class="car-results-panel js-car-results-panel">
+
+        <div class="car-results-panel__top">
+          <div>
+            <p>
+              Results
+            </p>
+
+            <h2>
+              Available Vehicles
+            </h2>
+          </div>
+        </div>
+
+        <div id="car-container" class="car-results-panel__body">
+          {% include "partials/car_list_partial.html" %}
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+</section>
+
+{% endblock %}
