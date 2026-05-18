@@ -106,6 +106,8 @@ sniffio
 social-auth-app-django
 social-auth-core
 sqlparse
+joblib
+pandas
 sympy
 tenacity
 tokenizers
