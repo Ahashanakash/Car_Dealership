@@ -19,6 +19,7 @@ distlib
 distro
 dj-database-url
 Django
+django-autoslug
 django-cors-headers
 django-crispy-forms
 django-embed-video

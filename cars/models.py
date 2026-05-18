@@ -3,7 +3,7 @@ from .constants import *
 from embed_video.fields import EmbedVideoField
 from django.core.exceptions import ValidationError
 from profiles.models import User
-from autoslug import AutoSlugField
+from autoslug.fields import AutoSlugField
 
 # Create your models here.
 
